@@ -1,0 +1,172 @@
+{% extends "ecom/homepage/homebase.html" %}
+{% load static %}
+
+{% block title %}
+  {{ product.name }} - ShopNext
+{% endblock title %}
+
+{% block css %}
+<style>
+  body {
+    background-color: #f8f9fa; /* Light gray background */
+  }
+
+  .product-detail-container {
+    display: flex; /* Use flexbox for layout */
+    margin-top: 2rem; /* Top margin for spacing */
+  }
+
+  .product-detail {
+    background-color: #ffffff; /* White background */
+    border-radius: 10px; /* Rounded corners */
+    overflow: hidden; /* Ensure rounded corners apply properly */
+    border: 1px solid #e0e0e0; /* Light border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    display: flex; /* Flexbox for layout */
+    flex-direction: column; /* Stack elements vertically */
+    justify-content: space-between; /* Align items with space between */
+    margin-right: 2rem; /* Right margin for spacing */
+    flex: 1; /* Equal width for both elements */
+  }
+
+  .product-detail .card-img-top {
+    height: 400px; /* Adjusted image height */
+    object-fit: contain; /* Maintain aspect ratio */
+    border-top-left-radius: 10px; /* Rounded corners for image */
+    border-bottom-left-radius: 10px;
+    width: 100%;
+  }
+
+  .product-detail .card-body {
+    padding: 2rem; /* Increased padding for better spacing */
+  }
+
+  .product-detail .btn {
+    width: 100%; /* Full width button */
+  }
+
+  .rating {
+    color: #FFD700; /* Golden color for stars */
+    font-size: 1.2rem; /* Adjust font size */
+    margin-bottom: 1rem; /* Space below rating */
+  }
+
+  .rating-count {
+    font-size: 1rem; /* Font size for rating count */
+    color: #6c757d; /* Gray color */
+    margin-left: 0.5rem; /* Space between stars and count */
+  }
+
+  .stock {
+    font-size: 1.2rem; /* Font size for stock */
+    margin-top: 1rem; /* Space above stock */
+  }
+
+  .stock-out {
+    color: red; /* Red color for out of stock message */
+  }
+
+  .quantity {
+    display: flex; /* Flexbox for quantity controls */
+    align-items: center; /* Align items vertically */
+    margin-top: 1rem; /* Space above quantity controls */
+  }
+
+  .quantity input {
+    width: 60px; /* Width of quantity input */
+    text-align: center; /* Center align text */
+    margin: 0 0.5rem; /* Space around input */
+  }
+
+  .quantity .btn {
+    width: 30px; /* Width of increment/decrement buttons */
+    font-size: 1rem; /* Font size of buttons */
+  }
+
+  /* Skeleton Loading Animation */
+  .skeleton-loading {
+    animation: pulse 1.5s infinite;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0f0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    border-radius: 10px;
+    height: 400px; /* Adjust height to match product image */
+    flex: 1; /* Equal width for both elements */
+  }
+
+  @keyframes pulse {
+    0% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: -100% 50%;
+    }
+  }
+</style>
+{% endblock css %}
+
+{% block body %}
+<div class="container my-4">
+  {% if product %}
+    <div class="product-detail-container">
+      <div class="product-detail">
+        <img src="{% static product.product_image %}" class="card-img-top" alt="{{ product.name }}">
+      </div>
+      <div class="product-detail">
+        <div class="card-body">
+          <h2 class="card-title">{{ product.name }}</h2>
+          <p class="card-text text-muted">Price: ${{ product.price }}</p>
+          <p class="card-text">{{ product.description }}</p>
+          <div class="rating">
+           Rating: {{product.rating}} | {{ product.rating_count }}</span>
+          </div>
+          <form id="add-to-cart-form" method="POST" action="{% url 'add-to-cart' product.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary mt-3 add-to-cart-btn" {% if product.stock <= 0 %}disabled{% endif %}><i class="fa fa-shopping-cart"></i> Add to Cart</button>
+            <a href="{% url 'cart' %}" class="btn btn-outline-primary mt-3 save-quantity-btn"><i class="fa fa-credit-card"></i> Save Quantity and View Cart</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="skeleton-loading"></div>
+  {% endif %}
+</div>
+
+<!-- jQuery library inclusion -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Custom JavaScript for quantity increment/decrement -->
+<script>
+  $(document).ready(function() {
+    var productId = '{{ product.id }}'; // Ensure product ID is passed correctly
+    
+    // Increment button
+    $('.increment-btn').click(function() {
+        var quantityInput = $('#quantity-input');
+        var currentValue = parseInt(quantityInput.val());
+        var stockCount = parseInt($('#stock-count').text());
+
+        if (currentValue < stockCount) {
+            quantityInput.val(currentValue + 1);
+        }
+    });
+
+    // Decrement button
+    $('.decrement-btn').click(function() {
+        var quantityInput = $('#quantity-input');
+        var currentValue = parseInt(quantityInput.val());
+
+        if (currentValue > 1) {
+            quantityInput.val(currentValue - 1);
+        }
+    });
+
+    // Save quantity to localStorage and navigate to display page
+    $('.save-quantity-btn').click(function() {
+        var quantity = $('#quantity-input').val();
+        localStorage.setItem('quantity', quantity);
+        window.location.href = "{% url 'product_detail' product.id %}";
+    });
+  });
+</script>
+{% endblock body %}

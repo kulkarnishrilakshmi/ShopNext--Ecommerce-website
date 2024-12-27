@@ -1,0 +1,162 @@
+{% extends "ecom/homepage/homebase.html" %}
+{% load static %}
+
+{% block title %}Products - ShopNext{% endblock title %}
+
+{% block css %}
+<style>
+  body {
+    background-color: #f8f9fa; /* Light gray background */
+  }
+
+  .product-card {
+    background-color: #ffffff; 
+    border: 1px solid #2a4e71; /* Add border with light gray color */
+    border-radius: 10px; 
+    overflow: hidden; 
+    transition: transform 0.3s, box-shadow 0.3s; 
+    height: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .product-card:hover {
+    transform: translateY(-5px); /* Move the card up slightly on hover */
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2); /* Larger shadow on hover */
+  }
+
+  .product-card .card-img-top {
+    height: 250px; /* Adjust image height */
+    object-fit: contain; /* Maintain aspect ratio and fit within container */
+    border-top-left-radius: 10px; /* Rounded corners for image */
+    border-top-right-radius: 10px;
+  }
+
+  .product-card .card-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+  }
+
+  .product-card .card-body .card-title {
+    font-size: 1.25rem; /* Larger font size for product name */
+    color: #3b3b5a; /* Darker text color */
+    margin-top: 0.75rem; /* Adjust top margin for spacing */
+    margin-bottom: 0.5rem; /* Adjust bottom margin for spacing */
+  }
+
+  .product-card .card-body .card-text {
+    margin-bottom: 1rem; /* Reduce bottom margin for price */
+    color: #6c757d; /* Lighter text color */
+  }
+
+  .product-card .card-body .btn-group {
+    align-self: flex-end; /* Align button group to the bottom of the card body */
+    margin-top: 25px; /* Ensure the button group stays at the bottom */
+  }
+
+  .product-card .card-body .btn-group .btn {
+    flex: 1; /* Equal width for buttons */
+  }
+
+  .trending-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+  }
+  .product-buttons a {
+    display: inline-block;
+    margin: 4px 0;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #fff;
+  }
+  .btn-outline-primary {
+    background-color: #007bff;
+    border: 1px solid #007bff;
+  }
+  .btn-outline-primary:hover {
+    background-color: #0056b3;
+    border: 1px solid #0056b3;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 8px 16px;
+    color: #293036;
+    text-decoration: none;
+    border-radius: 4px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn:hover {
+    border-color: #293036;
+    color:#fff; 
+    font-weight: bold;
+  }
+
+  @media (max-width: 768px) {
+    .product-card {
+      width: calc(50% - 40px);
+    }
+  }
+
+  @media (max-width: 576px) {
+    .product-card {
+      width: calc(100% - 40px);
+    }
+  }
+</style>
+{% endblock css %}
+
+{% block body %}
+<div class="container">
+  <div class="row">
+    <!-- Sidebar with filters and search -->
+    <div class="col-lg-3">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Filter by Category</h5>
+          <div class="mb-3">
+            <a href="{% url 'product_by_category' 'appliances+electronics+men+women+beauty' %}" class="btn btn-outline-dark btn-block mb-2">All Products</a>
+            <a href="{% url 'product_by_category' 'appliances' %}" class="btn btn-outline-dark btn-block mb-2">Appliances</a>
+            <a href="{% url 'product_by_category' 'electronics' %}" type="button" class="btn btn-outline-dark btn-block mb-2">Electronics</a>
+            <a href="{% url 'product_by_category' 'men+women' %}" class="btn btn-outline-dark btn-block mb-2">Fashion</a>
+            <a href="{% url 'product_by_category' 'beauty' %}" type="button" class="btn btn-outline-dark btn-block mb-2">Beauty</a>
+            <a href="{% url 'product_by_category' 'men' %}" type="button" class="btn btn-outline-dark btn-block mb-2">Men</a>
+            <a href="{% url 'product_by_category' 'women' %}" type="button" class="btn btn-outline-dark btn-block mb-2">Women</a>
+            <!-- Add more category buttons as needed -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main content area for products -->
+    <div class="col-lg-9">
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for product in products %}
+        <div class="col mb-4">
+          <div class="card h-100 product-card p-2 shadow-sm">
+            <img src="{% static product.product_image %}" class="card-img-top" alt="{{ product.name }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ product.name }}</h5>
+              <p class="card-text">${{ product.price }}</p>
+              <p class="card-text">Rating : {{product.rating}} | {{ product.rating_count }}</p>
+              <div class="product-buttons">
+                <a href="{% url 'add-to-cart' product.id %}" class="btn btn-outline-primary me-2"><i class="fa fa-shopping-cart"></i>Cart</a>
+                <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-primary"><i class="fa fa-credit-card"></i> Buy</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}
+

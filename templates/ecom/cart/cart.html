@@ -1,0 +1,274 @@
+{% extends 'ecom/homepage/homebase.html' %}
+{% load static %}
+
+{% block css %}
+<style>
+    /* Your custom CSS styles */
+    .footer {
+        background-color: #343a40;
+        color: #f8f9fa;
+        padding: 1rem 0;
+        text-align: center;
+        width: 100%;
+        margin-top: auto;
+    }
+
+    .footer a {
+        color: #ffffff;
+        margin: 0 10px;
+        font-size: 1.5rem;
+    }
+
+    body {
+        background-color: #f0f2f5;
+        font-family: Arial, sans-serif;
+        height: 100vh;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        background-color: #f3f3f3;
+        border-bottom: none;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .table {
+        background-color: #fff;
+        border-radius: 4px;
+    }
+
+    .table th {
+        font-weight: normal;
+        border-top: none;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .table td {
+        vertical-align: middle;
+        border-top: none;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .table img {
+        max-width: 60px;
+        height: auto;
+    }
+
+    .btn-proceed {
+        background-color: #f0c14b;
+        border-color: #a88734 #9c7e31 #846a29;
+        color: #111;
+        text-transform: uppercase;
+        font-weight: bold;
+        width: 100%;
+    }
+
+    .btn-proceed:hover {
+        background-color: #d4ad37;
+        border-color: #b08832 #846a29 #846a29;
+    }
+
+    /* Custom pop-up message style */
+    .popup-message {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 15px;
+        z-index: 1000;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <!-- Left column for products -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Shopping Cart</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Subtotal</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for p in products %}
+                                {% if p %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="{% static p.product_image.url %}" alt="Product Image" class="img-thumbnail">
+                                            <span class="ms-2">{{ p.name }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="product-price">${{ p.price }}</td>
+                                    <td>
+                                        <input type="number" class="form-control quantity-input text-center" value="1" min="1" data-product-id="{{ p.id }}" data-stock="{{ p.stock }}">
+                                    </td>
+                                    <td class="product-subtotal">${{ p.price }}</td>
+                                    <td>
+                                        <a href="{% url 'remove-from-cart' p.id %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i> Remove</a>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5">
+                                        <h5 class="text-center">Your cart is empty.</h5>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right column for total amount, purchase quantity, and username -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Order Summary</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total Items:
+                            <span id="total-items" class="badge bg-primary">{{ product_count_in_cart }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total:
+                            <span id="total-amount" class="badge bg-danger">${{ total }}</span>
+                        </li>
+                    </ul>
+                    <a href="{% url 'customer-address' %}" class="btn btn-proceed mt-3">Proceed to Checkout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pop-up message -->
+<div id="stock-limit-message" class="popup-message">
+    <p>Sorry, no more items are available in stock.</p>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var quantityInputs = document.querySelectorAll('.quantity-input');
+        var productsTable = document.querySelector('.table tbody');
+
+        // Initialize quantities from localStorage on page load
+        quantityInputs.forEach(function(input) {
+            var productId = input.dataset.productId;
+            var storedQuantity = localStorage.getItem('product_' + productId + '_quantity');
+            if (storedQuantity !== null) {
+                input.value = storedQuantity;
+                updateSubtotal(input);
+            }
+        });
+
+        // Function to update subtotal and total whenever quantity changes
+        quantityInputs.forEach(function(input) {
+            input.addEventListener('input', function() {
+                updateSubtotal(input);
+                saveToLocalStorage(input);
+                updateTotals();
+                checkStockLimit(input);
+            });
+        });
+
+        function updateSubtotal(input) {
+            var quantity = parseInt(input.value);
+            var price = parseFloat(input.closest('tr').querySelector('.product-price').textContent.replace('$', ''));
+            if (!isNaN(price)) {
+                var subtotal = quantity * price;
+                input.closest('tr').querySelector('.product-subtotal').textContent = '$' + subtotal.toFixed(2);
+            }
+        }
+
+        function saveToLocalStorage(input) {
+            var productId = input.dataset.productId;
+            var quantity = input.value;
+            sessionStorage.setItem('product_' + productId + '_quantity', quantity);
+        }
+
+        function updateTotals() {
+            var totalItems = 0;
+            var totalAmount = 0.0;
+            quantityInputs.forEach(function(input) {
+                var price = parseFloat(input.closest('tr').querySelector('.product-price').textContent.replace('$', ''));
+                var quantity = parseInt(input.value);
+                if (!isNaN(quantity) && !isNaN(price)) {
+                    var subtotal = quantity * price;
+                    totalItems += quantity;
+                    totalAmount += subtotal;
+                }
+            });
+
+            document.getElementById('total-items').textContent = totalItems;
+            document.getElementById('total-amount').textContent = '$' + totalAmount.toFixed(2);
+        }
+
+        function checkStockLimit(input) {
+            var quantity = parseInt(input.value);
+            var stock = parseInt(input.dataset.stock);
+            if (quantity > stock) {
+                var stockLimitMessage = document.getElementById('stock-limit-message');
+                stockLimitMessage.style.display = 'block';
+                setTimeout(function() {
+                    stockLimitMessage.style.display = 'none';
+                }, 3000); // Hide message after 3 seconds
+                input.value = stock; // Set input value to max available stock
+                updateSubtotal(input); // Update subtotal with max available stock
+                saveToLocalStorage(input); // Save max available stock to localStorage
+            }
+        }
+
+        // Remove item from cart
+        productsTable.addEventListener('click', function(e) {
+            if (e.target && e.target.matches('.btn-remove')) {
+                var productId = e.target.dataset.productId;
+                var quantityInput = document.querySelector('.quantity-input[data-product-id="' + productId + '"]');
+                sessionStorage.removeItem('product_' + productId + '_quantity');
+                e.target.closest('tr').remove();
+                updateTotals();
+            }
+        });
+
+        // Initial update of totals on page load
+        updateTotals();
+    });
+</script>
+{% endblock %}
+

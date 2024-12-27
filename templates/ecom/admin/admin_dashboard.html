@@ -1,0 +1,136 @@
+{% extends 'ecom/homepage/homebase.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard{% endblock title %}
+
+{% block css %}
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+
+  .admin-card {
+    background-color: #ffffff;
+    border: 1px solid #ced4da;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .admin-card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #343a40;
+    margin-bottom: 15px;
+  }
+
+  .table-responsive {
+    margin-top: 20px;
+  }
+
+  .table thead th {
+    background-color: #343a40;
+    color: #ffffff;
+    border-color: #343a40;
+  }
+
+  .table tbody td {
+    vertical-align: middle;
+  }
+
+  .label {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+
+  .label-info {
+    background-color: #17a2b8;
+    color: #ffffff;
+  }
+
+  .label-success {
+    background-color: #28a745;
+    color: #ffffff;
+  }
+
+  .label-warning {
+    background-color: #ffc107;
+    color: #343a40;
+  }
+
+  .label-primary {
+    background-color: #007bff;
+    color: #ffffff;
+  }
+</style>
+{% endblock css %}
+
+{% block body %}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <h2 class="text-center">Admin Dashboard</h2>
+    </div>
+  </div>
+
+  <!-- Include Dashboard Cards -->
+  <div class="container">
+    {% include 'ecom/admin/admin_dashboard_cards.html' %}
+  </div>
+
+  <!-- Recent Bookings Section -->
+  <div class="container">
+    <div class="admin-card">
+      <h6 class="admin-card-title">Recent Bookings</h6>
+      <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Contact</th>
+              <th>Shipment Address</th>
+              <th>Product</th>
+              <th>Image</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for products, customer, order in data %}
+            <tr class="text-center">
+              {% for c in customer %}
+              <td>{{ c.get_name }}</td>
+              <td>{{ c.mobile }}</td>
+              <td>{{ order.address }}</td>
+              {% endfor %} 
+              {% for p in products %}
+              <td>{{ p.name }}</td>
+              <td>
+                <img
+                  src="{% static p.product_image.url %}"
+                  alt="Profile Pic"
+                  height="40px"
+                  width="40px"
+                />
+              </td>
+              {% endfor %}
+              <td>
+                {% if order.status == 'Pending' %}
+                <span class="label label-info">{{ order.status }}</span>
+                {% elif order.status == 'Delivered' %}
+                <span class="label label-success">{{ order.status }}</span>
+                {% elif order.status == 'Out for Delivery' %}
+                <span class="label label-warning">{{ order.status }}</span>
+                {% else %}
+                <span class="label label-primary">{{ order.status }}</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %} {% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+    <!-- Custom CSS -->
+    <style>
+        .head1 {
+            color: #fff;
+        }
+        body {
+            background-color: #f8f9fa;
+            font-family: "Roboto", sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: #343a40;
+            border-bottom: 2px solid #212121;
+            height: 4rem;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+
+        .navbar-brand {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-link {
+            color: #ffffff !important;
+            font-size: 0.9rem;
+        }
+
+        .nav-link:hover {
+            color: #f8f9fa !important;
+        }
+
+        .navbar-toggler {
+            border-color: #ffffff;
+        }
+
+        .navbar-toggler-icon {
+            background-color: #ffffff;
+        }
+
+        .footer {
+            background-color: #343a40;
+            color: #f8f9fa;
+            padding: 1rem 0;
+            text-align: center;
+            width: 100%;
+            margin-top: auto;
+            min-height: 75px;
+        }
+
+        .footer a {
+            color: #ffffff;
+            margin: 0 10px;
+            font-size: 1.5rem;
+        }
+
+        .search-input {
+            padding: 0.5rem;
+            margin-top: 10px;
+        }
+
+        .search-button {
+            padding: 0.5rem 1rem;
+            height: 100%;
+            font-size: 0.9rem;
+            border-color: #fff;
+            margin-top: 10px;
+        }
+
+        @media (min-width: 992px) {
+            .navbar-nav .nav-item .nav-link {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+    {% block css %} {% endblock %}
+</head>
+<body>
+<!-- Navbar -->
+{% if user.is_superuser %}
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background: #343a40">
+    <div class="container">
+        <a class="navbar-brand" href="/">Admin Panel</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto ms-2 mb-2 mb-lg-0 mt-2">
+                <li class="nav-item">
+                    <a class="nav-link btn" href="/">HOME</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn" href="{% url 'view-customer' %}">CUSTOMER</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn" href="{% url 'admin-view-booking' %}">CUSTOMER ORDERS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn" href="{% url 'admin-products' %}">MANAGE PRODUCTS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn" href="{% url 'view-feedback' %}">CUSTOMER FEEDBACK</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav me-auto ms-2 mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-link nav-item nav-link">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+        
+    </div>
+</nav>
+
+{% else %}
+<!-- Customer Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <span class="head1">ShopNext</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto ms-2 mb-2 mb-lg-0 mt-2">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">HOME</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'product_display' %}">PRODUCTS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'contactus' %}">CONTACT</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link me-2" href="{% url 'my-profile' %}">
+                        <i class="fas fa-user me-2"></i> Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link me-2" href="{% url 'cart' %}">
+                        <i class="fas fa-shopping-bag"></i> Cart
+                    </a>
+                </li>
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="nav-link me-2" href="{% url 'my_order' %}">
+                      <i class="fas fa-list"></i> Orders
+                  </a>
+              </li>
+              {% endif %}
+                {% if user.is_authenticated %}
+                <li class="nav-item ms-2">
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-link nav-item nav-link">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                        
+                      
+                    </form>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'customerlogin' %}">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endif %}
+
+<!-- Main content -->
+<div class="container mt-3 pt-3">{% block body %} {% endblock %}</div>
+
+<!-- Footer section -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <p>© ShopNext. All rights reserved.</p>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="#" class="text-light"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-light"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-light"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-light"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+{% block js %} {% endblock %}
+</body>
+</html>

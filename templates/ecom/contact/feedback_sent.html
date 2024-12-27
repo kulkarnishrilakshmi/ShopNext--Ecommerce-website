@@ -1,0 +1,24 @@
+{% extends 'ecom/homepage/homebase.html' %}
+{% load static %}
+{% block title %}Feedback Sent - ShopNext{% endblock title %}
+
+{% block body %}
+<style>
+    .jumbotron {
+        margin-top: 50px;
+        text-align: center;
+    }
+</style>
+
+<div class="container">
+    <div class="jumbotron">
+        <h1 class="display-4">Your feedback sent successfully!</h1>
+        <p class="lead">We will respond to your feedback soon.</p>
+        <hr class="my-4">
+        <p>Check other features of our website!</p>
+        <p class="lead">
+            <a class="btn btn-primary btn-lg" href="/" role="button">HOME</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

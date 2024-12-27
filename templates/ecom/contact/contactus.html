@@ -1,0 +1,151 @@
+{% extends 'ecom/homepage/homebase.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %} Contact Us - ShopNext {% endblock title %}
+
+{% block css %}
+<style media="screen">
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+        /* background: linear-gradient(to right, #b92b27, #1565c0) */
+    }
+
+    .wrapper {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    /* Ensure the footer stays at the bottom */
+    .footer {
+        background-color: #343a40; /* Dark background color */
+        color: #f8f9fa; /* Light text color */
+        padding: 1rem 0; /* Padding top and bottom */
+        text-align: center; /* Center align text */
+        position: relative; /* Position relative to ensure it stays within the wrapper */
+        bottom: 0; /* Stick to the bottom of the wrapper */
+        width: 100%;
+    }
+
+    .footer a {
+        color: #ffffff; /* White color for links */
+        margin: 0 10px; /* Margin around links */
+        font-size: 1.5rem; /* Larger font size for social icons */
+    }
+
+    .flex-grow-1 {
+        flex-grow: 1;
+    }
+
+    .box {
+        width: 100%;
+        max-width: 400px; /* Limiting width to 400px */
+        padding: 40px;
+        background: #3e454c;
+        text-align: center;
+        transition: 0.25s;
+        margin: auto; /* Centering the box horizontally */
+        margin-top: 50px; /* Adding some top margin */
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5); /* Adding a subtle shadow */
+    }
+
+    .box h1 {
+        color: white;
+        font-weight: 500;
+        margin-bottom: 30px; /* Spacing below the title */
+    }
+
+    .box input[type="text"],
+    .box input[type="email"],
+    .box textarea {
+        border: 0;
+        background: none;
+        display: block;
+        margin: 20px auto;
+        text-align: center;
+        border: 2px solid #ffffff;
+        padding: 14px 18px; /* Adjusting padding */
+        width: 100%; /* Full width */
+        outline: none;
+        color: white;
+        border-radius: 24px;
+        transition: 0.25s;
+        max-width: 300px;
+    }
+
+    .box textarea {
+        resize: none; 
+    }
+
+    .box input[type="submit"] {
+        border: 0;
+        background: #f0c14b; 
+        display: block;
+        margin: 20px auto;
+        text-align: center;
+        padding: 14px 18px;
+        outline: none;
+        color: #111;
+        border-radius: 24px;
+        transition: background 0.25s;
+        cursor: pointer;
+        width: 100%; /* Full width */
+        max-width: 300px; /* Limiting max-width */
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .box input[type="submit"]:hover {
+        background: #f0c14bcc; /* Lighten the background color on hover */
+    }
+
+    .box a.btn {
+        display: block;
+        margin: 20px auto;
+        text-align: center;
+        padding: 10px 18px;
+        color: #f0c14b; 
+        border: 2px solid #f0c14b; 
+        border-radius: 24px;
+        text-decoration: none;
+        transition: color 0.25s, background 0.25s;
+    }
+
+    .box a.btn:hover {
+        background-color: #f0c14b;
+        color: #fff;
+    }
+</style>
+{% endblock css %}
+
+{% block body %}
+<div class="container mb-4">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card box">
+                <form method="post" action="{% url 'contactus' %}" >
+                    {% csrf_token %}
+                    <h1>Contact Us</h1>
+                    
+
+                    <input type="text" id="name" name="name" class="form-control" placeholder="Enter your name" required>
+                    
+
+                    <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
+
+                    <input type="text" id="subject" name="subject" class="form-control" placeholder="Enter the subject" required>
+                    
+
+                    <textarea id="message" name="message" class="form-control" rows="5" placeholder="Enter your message" required></textarea>
+
+                    <input type="submit" class="btn btn-primary" value="Send Message">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

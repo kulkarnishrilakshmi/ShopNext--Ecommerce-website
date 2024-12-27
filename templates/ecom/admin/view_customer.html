@@ -1,0 +1,104 @@
+{% extends 'ecom/homepage/homebase.html' %}
+{% load static %}
+
+{% block title %}Customer List - Admin Dashboard{% endblock title %}
+
+{% block css %}
+<style>
+    /* Custom styles for the customer list page */
+    body {
+        background-color: #f8f9fa !important;
+        font-family: 'Roboto', sans-serif !important;
+    }
+
+    .panel {
+        margin-top: 50px;
+        background-color: #fff;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .panel-heading {
+        background-color: #dc3545;
+        color: #fff;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .panel-title {
+        text-align: center;
+        font-size: 1.5rem;
+        padding: 10px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    td img {
+        border-radius: 50%;
+    }
+
+    .btn {
+        margin: 2px;
+    }
+
+    .btn-xs {
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+</style>
+{% endblock css %}
+
+{% block body %}
+
+<div class="container">
+    <div class="panel panel-danger">
+        <div class="panel-heading">
+            <h6 class="panel-title">Total Customers</h6>
+        </div>
+        <table class="table table-hover table-bordered" id="dev-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Picture</th>
+                    <th>Contact</th>
+                    <th>Address</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in customers %}
+                <tr>
+                    <td>{{ c.get_name }}</td>
+                    <td><img src="{% static c.profile_pic.url %}" alt="Profile Pic" height="40px" width="40px" /></td>
+                    <td>{{ c.mobile }}</td>
+                    <td>{{ c.address }}</td>
+                    <td>
+                        <a class="btn btn-primary btn-xs" href="{% url 'update-customer' c.id %}">
+                            <span class="glyphicon glyphicon-edit"></span> Edit
+                        </a>
+                        <a class="btn btn-danger btn-xs" href="{% url 'delete-customer' c.id %}">
+                            <span class="glyphicon glyphicon-trash"></span> Delete
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock body %}

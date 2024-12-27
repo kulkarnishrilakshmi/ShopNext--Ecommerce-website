@@ -1,0 +1,112 @@
+{% extends 'ecom/homepage/homebase.html' %}
+{% load static %}
+
+{% block title %}Orders - Admin Dashboard{% endblock title %}
+
+{% block css %}
+<style>
+
+    body {
+        background-color: #f8f9fa !important;
+        font-family: 'Roboto', sans-serif !important;
+    }
+
+    .panel {
+        margin-top: 50px;
+        background-color: #fff;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .panel-heading {
+        background-color: #dc3545;
+        color: #fff;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .panel-title {
+        text-align: center;
+        font-size: 1.5rem;
+        padding: 10px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    td img {
+        border-radius: 50%;
+    }
+
+    .btn {
+        margin: 2px;
+    }
+
+    .btn-xs {
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+</style>
+{% endblock css %}
+
+{% block body %}
+
+<div class="container">
+    <div class="panel panel-danger">
+        <div class="panel-heading">
+            <h6 class="panel-title">Total Orders</h6>
+        </div>
+        <table class="table table-hover table-bordered" id="dev-table">
+            <thead>
+                <tr >
+                    <th class="text-center">Customer</th>
+                    <th class="text-center">Contact</th>
+                    <th class="text-center">Shipping Address</th>
+                    <th class="text-center">Product</th>
+                    <th class="text-center">Image</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product, customer, order in data %}
+                <tr >
+                    {% for c in customer %}
+                    <td class="text-center">{{ c.get_name }}</td>
+                    <td class="text-center">{{ c.mobile }}</td>
+                    <td class="text-center">{{ order.address }}</td>
+                    {% endfor %}
+                    {% for p in product %}
+                    <td class="text-center">{{ p.name }}</td>
+                    <td><img src="{% static p.product_image.url %}" alt="Product Image" height="40px" width="40px"></td>
+                    <td>{{ order.status }}</td>
+                    <td>
+                        <a class="btn btn-primary btn-xs" href="{% url 'update-order' order.id %}">
+                            <span class="glyphicon glyphicon-edit"></span> Edit
+                        </a>
+                        <a class="btn btn-danger btn-xs" href="{% url 'delete-order' order.id %}">
+                            <span class="glyphicon glyphicon-trash"></span> Delete
+                        </a>
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock body %}

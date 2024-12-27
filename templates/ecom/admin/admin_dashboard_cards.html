@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Admin Dashboard Cards</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+  <!-- Font Awesome CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <style media="screen">
+    .market-updates {
+      margin-top: 20px;
+    }
+
+    .market-update-gd {
+      margin-bottom: 20px;
+    }
+
+    .market-update-block {
+      padding: 20px;
+      background: #999;
+      color: #fff;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+      transition: background-color 0.5s ease;
+    }
+
+    .market-update-block:hover {
+      background: #3C3C3C;
+    }
+
+    .market-update-block h3 {
+      font-size: 2.5em;
+      font-family: 'Carrois Gothic', sans-serif;
+      margin-top: 0;
+    }
+
+    .market-update-block h4 {
+      font-size: 1.2em;
+      margin-bottom: 0;
+    }
+
+    .market-update-right i {
+      font-size: 3em;
+      color: #343A40;
+      width: 80px;
+      height: 80px;
+      background: #fff;
+      text-align: center;
+      border-radius: 50%;
+      line-height: 80px;
+    }
+
+    .market-update-left {
+      padding-right: 0;
+    }
+
+    
+  </style>
+</head>
+
+<body>
+  <div class="market-updates">
+    <div class="col-md-4 market-update-gd">
+      <div class="market-update-block clr-block-1">
+        <div class="col-md-8 market-update-left">
+          <h3>{{ customercount }}</h3>
+          <h4>Registered Customers</h4>
+        </div>
+        <div class="col-md-4 market-update-right">
+          <i class="fa fa-users"></i>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+
+    <div class="col-md-4 market-update-gd">
+      <div class="market-update-block clr-block-2">
+        <div class="col-md-8 market-update-left">
+          <h3>{{ productcount }}</h3>
+          <h4>Total Products</h4>
+        </div>
+        <div class="col-md-4 market-update-right">
+          <i class="fa fa-shopping-cart"></i>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+
+    <div class="col-md-4 market-update-gd">
+      <div class="market-update-block clr-block-3">
+        <div class="col-md-8 market-update-left">
+          <h3>{{ ordercount }}</h3>
+          <h4>Total Orders</h4>
+        </div>
+        <div class="col-md-4 market-update-right">
+          <i class="fa fa-bar-chart"></i>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

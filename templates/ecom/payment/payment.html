@@ -1,0 +1,145 @@
+{% extends 'ecom/homepage/homebase.html' %}
+{% load static %}
+
+{% block css %}
+<style>
+  .panel {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .panel-heading {
+    background-color: #f5f5f5;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .panel-title {
+    font-weight: bold;
+  }
+
+  .form-control {
+    border-radius: 0.25rem;
+  }
+
+  .input-group-addon {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+  }
+
+  .btn-pay {
+    background-color: #f0c14b; /* Amazon's button color */
+    border-color: #a88734; /* Amazon's button border color */
+    color: #fff;
+  }
+
+  .btn-pay:hover {
+    background-color: #ddb641; /* Darker shade for hover */
+    border-color: #99703f;
+  }
+
+  .nav-link.active {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: #fff;
+  }
+
+  /* Center content vertically and horizontally */
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ensure the entire viewport height is covered */
+    overflow: hidden; /* Prevents scrollbars from appearing */
+  }
+</style>
+{% endblock css %}
+
+{% block body %}
+<div class="wrapper">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card panel">
+          <div class="card-header panel-heading">
+            <h3 class="panel-title">Payment Details</h3>
+            <div class="form-check form-check-inline float-end">
+              <input class="form-check-input" type="checkbox" id="rememberMe" value="option1">
+              <label class="form-check-label" for="rememberMe">Remember</label>
+            </div>
+          </div>
+          <div class="card-body">
+            <form id="paymentForm" role="form" method="post" action="{% url 'payment_success' %}">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="cardNumber" class="form-label">CARD NUMBER</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="cardNumber" name="cardNumber" placeholder="xxxx xxxx xxxx xxxx" required autofocus>
+                  <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="mb-3">
+                    <label for="expityMonth" class="form-label">MONTH</label>
+                    <input type="text" class="form-control" id="expityMonth" name="expityMonth" placeholder="MM - 02" required>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="mb-3">
+                    <label for="expityYear" class="form-label">EXPIRY DATE</label>
+                    <input type="text" class="form-control" id="expityYear" name="expityYear" placeholder="YY - 22" required>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="mb-3">
+                    <label for="cvCode" class="form-label">CV CODE</label>
+                    <input type="password" class="form-control" id="cvCode" name="cvCode" placeholder="CV - xxx" required>
+                  </div>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-lg btn-block btn-pay">Pay Now</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('paymentForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Create a FormData object to collect form data
+    var formData = new FormData(this);
+
+    // Send an AJAX request
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '{% url "customer-address" %}', true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest'); // Optional
+    xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}'); // Ensure CSRF token is included
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        window.location.href = '{% url "payment_success" %}';
+      } else {
+        console.error('Error:', xhr.status, xhr.statusText);
+        alert('Error: ' + xhr.statusText); // Handle errors appropriately
+      }
+    };
+    xhr.onerror = function() {
+      console.error('Request failed');
+      alert('Request failed'); // Handle network errors
+    };
+    xhr.send(formData); // Send FormData object
+  });
+});
+</script>
+{% endblock %}
+{% endblock %}
+

@@ -1,0 +1,75 @@
+{% load static %}
+
+<style>
+  .category-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .category-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  .category-card img {
+    object-fit: cover;
+    height: 150px;
+    width: 100%;
+  }
+  .category-card a {
+    text-decoration: none; /* Remove underline */
+    color: #000; /* Black text color */
+  }
+  .category-card a:hover {
+    color: #000; /* Maintain black text color on hover */
+  }
+</style>
+
+<div class="container-fluid mt-3">
+  <!-- Replace this card with your main product display image or banner -->
+  <div class="card">
+    <img src="{% static 'product_image/1._CB554120081_.jpg' %}" class="card-img-top" alt="Product Image">
+  </div>
+</div>
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+      <div class="card category-card">
+        <a href="{% url 'product_by_category' 'beauty' %}">
+          <img src="{% static 'product_image/beauty.jpg' %}" class="card-img-top" alt="Beauty">
+          <div class="card-body text-center">
+            <h5 class="card-title">Beauty</h5>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+      <div class="card category-card">
+        <a href="{% url 'product_by_category' 'men+women' %}">
+          <img src="{% static 'product_image/fashion.jpg' %}" class="card-img-top" alt="Fashion">
+          <div class="card-body text-center">
+            <h5 class="card-title">Fashion</h5>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+      <div class="card category-card">
+        <a href="{% url 'product_by_category' 'electronics' %}">
+          <img src="{% static 'product_image/electronics.jpg' %}" class="card-img-top" alt="Electronics">
+          <div class="card-body text-center">
+            <h5 class="card-title">Electronics</h5>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+      <div class="card category-card">
+        <a href="{% url 'product_by_category' 'appliances' %}">
+          <img src="{% static 'product_image/appliances.jpg' %}" class="card-img-top" alt="Appliances">
+          <div class="card-body text-center">
+            <h5 class="card-title">Appliances</h5>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
